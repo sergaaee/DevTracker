@@ -1,0 +1,17 @@
+backend/.env
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+venv/
+*.egg-info/
+*.egg
+*.log
+.vscode/
+node_modules/
+dist/
+build/
+*.tgz
+*.zip
+*.tar.gz

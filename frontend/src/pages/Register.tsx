@@ -29,7 +29,6 @@ export default function Register() {
 
   useEffect(() => {
     if (registerAttempted && user && !isLoading) {
-      console.log("User available after register, redirecting to:", `/profile/${user.username}`);
       setTimeout(() => navigate(`/profile/${user.username}`, { replace: true }), 1000);
     }
   }, [registerAttempted, user, isLoading, navigate]);

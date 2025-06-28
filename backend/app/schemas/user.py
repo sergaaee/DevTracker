@@ -1,36 +1,49 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class UserCreate(BaseModel):
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "username": "johndoe",
+                "email": "example@mail.com",
+                "password": "password123",
+            }
+        },
+    )
+
     username: str
-    email: str
+    email: EmailStr
     password: str
 
 
 class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     username: str
-    email: str
-
-    class Config:
-        orm_mode = True
+    email: EmailStr
 
 
 class UserLogin(BaseModel):
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {"username": "johndoe", "password": "password123"}
+        },
+    )
+
     username: str
     password: str
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": {"username": "johndoe", "password": "password123"}}
-
 
 class UserGet(BaseModel):
-    username: str
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={"example": {"username": "johndoe"}}
+    )
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": {"username": "johndoe"}}
+    username: str
 
 
 class Token(BaseModel):

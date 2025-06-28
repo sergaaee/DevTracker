@@ -18,7 +18,6 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       await login(username, password);
-      console.log("Login successful");
       setLoginAttempted(true);
     } catch (err) {
       console.error("Login failed:", err);
@@ -26,7 +25,6 @@ export default function Login() {
   };
 
   useEffect(() => {
-    console.log("Login useEffect:", { loginAttempted, user, isLoading, next });
     if (loginAttempted && user && !isLoading) {
       const redirectTo = next || `/profile/${user.username}`;
       console.log("Redirecting to:", redirectTo);

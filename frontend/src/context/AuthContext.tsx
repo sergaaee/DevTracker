@@ -1,6 +1,6 @@
 // AuthContext.tsx
-import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface User {
   id: string;
@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const initializeUser = async () => {
-      console.log("Initializing user...");
       const token = localStorage.getItem("access_token");
       const storedUsername = localStorage.getItem("username");
 
@@ -76,10 +75,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       localStorage.setItem("access_token", response.data.access_token);
       localStorage.setItem("username", response.data.user.username);
-      console.log("Stored in localStorage:", {
-        access_token: response.data.access_token,
-        username: response.data.user.username,
-      });
       axios.defaults.headers["Authorization"] = `Bearer ${response.data.access_token}`;
       const userData: User = {
         id: response.data.user.id.toString(),
@@ -87,7 +82,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: response.data.user.email,
       };
       setUser(userData);
-      console.log("User set after login:", userData);
       setError(null);
     } catch (e: any) {
       setError(e.response?.data?.detail || "Ошибка входа. Попробуйте еще раз.");
@@ -107,10 +101,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       localStorage.setItem("access_token", response.data.access_token);
       localStorage.setItem("username", response.data.user.username);
-      console.log("Stored in localStorage:", {
-        access_token: response.data.access_token,
-        username: response.data.user.username,
-      });
       axios.defaults.headers["Authorization"] = `Bearer ${response.data.access_token}`;
       const userData: User = {
         id: response.data.user.id.toString(),
@@ -118,10 +108,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: response.data.user.email,
       };
       setUser(userData);
-      console.log("User set after register:", userData);
       setError(null);
     } catch (e: any) {
-      setError(e.response?.data?.detail || "Ошибка регистрации. Попробуйте еще раз.");
+      if (e.response?.status === 400) {
+        setError("Пользователь с таким логином или почтой уже существует.");
+      }
+      else if (e.response?.status === 422) {
+        setError("Некорректный формат для почты.");
+      }
+      else {
+        console.error("Registration error:", e);
+      }
       throw e;
     } finally {
       setIsLoading(false);

@@ -41,7 +41,14 @@ export default function Profile() {
         setProfile(data);
       } catch (err: any) {
         console.error("Error fetching profile:", err);
-        setError("Ошибка загрузки профиля");
+        if (err.response?.status === 404) {
+          setError("Не удалось найти профиль.");
+        }
+        else if (err.response?.status === 403) {
+          setError("У вас нет доступа к этому профилю.");
+        } else {
+          setError("Произошла ошибка при загрузке профиля. Попробуйте позже.");
+        }
       } finally {
         setLoading(false);
       }
@@ -83,7 +90,9 @@ export default function Profile() {
         </div>
         <div className="bg-gray-700 rounded-lg p-4">
           <p className="text-gray-300">
-            Здесь будет информация о ваших последних коммитах, активностях и друзей.
+            {isCurrentUser
+              ? "Это ваш профиль. Вы можете редактировать информацию, подключать GitHub и Telegram."
+              : "Это профиль пользователя. Вы можете следить за его активностью и достижениями."}
           </p>
         </div>
       </div>

@@ -25,3 +25,16 @@ def login_user(user: user_schema.UserLogin, db: Session):
 
 def get_user_by_username(username: str, db: Session):
     return db.query(models.User).filter_by(username=username).first()
+
+
+def get_user_by_email(email: str, db: Session):
+    return db.query(models.User).filter_by(email=email).first()
+
+
+def delete_user(username: str, db: Session):
+    db_user = get_user_by_username(username, db)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(db_user)
+    db.commit()
+    return {"detail": "User deleted successfully"}
